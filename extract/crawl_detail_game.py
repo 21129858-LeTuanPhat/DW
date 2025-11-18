@@ -67,6 +67,15 @@ def crawl(job,process_id):
                 for idx, link in enumerate(batch_links, start=i+1):
                     try:
                         page.goto(link, wait_until="load", timeout=360000)
+                        try:
+                            span_stop = page.wait_for_selector('.Mc7qX.Vporl.Q5X10', timeout=5000)
+                            if span_stop:
+                                print("Tìm thấy popup, click để đóng..."+str(idx))
+                                span_stop.click(force=True)
+                                time.sleep(1)
+                                print("Popup đã được đóng!" +str(idx))
+                        except Exception:
+                            print("Không thấy popup, tiếp tục crawl..."+str(idx))
                     except PlaywrightTimeoutError:
                         print(f"Timeout khi truy cập {link}, tiếp tục thôi")
                         continue
