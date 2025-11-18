@@ -61,7 +61,7 @@ def crawl(job,process_id):
             context = browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36")
             page = context.new_page()
             # Chia batch 10 link/lần
-            for i in range(0, len(list_links[:300]), batch_size):
+            for i in range(0, len(list_links[:100]), batch_size):
                 batch_links = list_links[i:i+batch_size]
                 print(f"Đang xử lý batch {i//batch_size + 1}: {len(batch_links)} link")
                 for idx, link in enumerate(batch_links, start=i+1):
