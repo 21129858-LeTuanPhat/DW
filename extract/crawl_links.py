@@ -36,8 +36,9 @@ def startJar():
             send_email(f'không parse được dữ liệu từ json sang dữ liệu bên python {today}')
             return          
     return job
-
+2
 def startCrawl(job, process_id):
+    #1.1.8 Bắt đầu cào link games
     url = job['jobConfig']['sourcePath']
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(headless=True)
@@ -55,8 +56,6 @@ def startCrawl(job, process_id):
         except Exception:
             print("Không thấy popup, tiếp tục crawl...")
 
-
-        #1.1.8 Bắt đầu cào link games
         list_games = []
         try:
             while True:

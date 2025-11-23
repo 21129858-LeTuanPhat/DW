@@ -59,7 +59,6 @@ def get_latest_today_process_log(job):
         password=job['config']["password"],
         db=job['config']["database"]
     )
-
     try:
         with conn.cursor(pymysql.cursors.DictCursor) as cur:
 
@@ -72,9 +71,7 @@ def get_latest_today_process_log(job):
                 ORDER BY pl.created_at DESC
                 LIMIT 1;
             """
-
             cur.execute(sql)
             return cur.fetchone()  
-
     finally:
         conn.close()        
