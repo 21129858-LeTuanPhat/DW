@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game Analytics Platform</title>
+    <link rel="stylesheet" href="index.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  </head>
+  <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="logo">
+          <span class="logo-icon">🎮</span>
+          <span class="logo-text">GameStats</span>
+        </div>
+        <div class="nav-stats">
+          <div class="stat-badge">
+            <span class="badge-value" id="totalGames">-</span>
+            <span class="badge-label">Total Games</span>
+          </div>
+          <div class="stat-badge">
+            <span class="badge-value" id="totalGenres">-</span>
+            <span class="badge-label">Genres</span>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Hero Section -->
+      <section class="hero">
+        <h1 class="hero-title">Game Industry Analytics</h1>
+        <p class="hero-subtitle">
+          Comprehensive insights into game releases, genres, and market trends
+        </p>
+      </section>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <!-- Card 1: Genre Distribution -->
+        <div class="stat-card large">
+          <div class="card-header-modern">
+            <div class="header-left">
+              <span class="card-icon">📊</span>
+              <div>
+                <h3 class="card-title">Genre Distribution</h3>
+                <p class="card-subtitle">Total games by genre category</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <canvas id="genreChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Card 2: Seasonal Trends -->
+        <div class="stat-card large">
+          <div class="card-header-modern">
+            <div class="header-left">
+              <span class="card-icon">🌟</span>
+              <div>
+                <h3 class="card-title">Seasonal Performance</h3>
+                <p class="card-subtitle">Games released per season</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <canvas id="seasonChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Card 3: Price Analysis -->
+        <div class="stat-card medium">
+          <div class="card-header-modern">
+            <div class="header-left">
+              <span class="card-icon">💰</span>
+              <div>
+                <h3 class="card-title">Average Pricing</h3>
+                <p class="card-subtitle">Price trends by season</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <canvas id="priceChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Card 4: Top Release Months -->
+        <div class="stat-card medium">
+          <div class="card-header-modern">
+            <div class="header-left">
+              <span class="card-icon">🏆</span>
+              <div>
+                <h3 class="card-title">Peak Months</h3>
+                <p class="card-subtitle">Top 10 release periods</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <canvas id="topMonthsChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Card 5: Best & Worst Months -->
+        <div class="stat-card full">
+          <div class="card-header-modern">
+            <div class="header-left">
+              <span class="card-icon">📅</span>
+              <div>
+                <h3 class="card-title">Genre Performance Timeline</h3>
+                <p class="card-subtitle">
+                  Best and worst performing months by genre
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-wrapper">
+              <table class="modern-table">
+                <thead>
+                  <tr>
+                    <th>Genre</th>
+                    <th>Peak Month</th>
+                    <th>Low Month</th>
+                  </tr>
+                </thead>
+                <tbody id="bestWorstTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loader"></div>
+      <p>Loading analytics data...</p>
+    </div>
+
+    <script src="index.js"></script>
+  </body>
+</html>
