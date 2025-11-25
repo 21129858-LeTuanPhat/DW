@@ -105,9 +105,9 @@ def main():
    
    #1.1.5 Bắt đầu chạy hàm get_latest_today_process_log(job) để kiểm tra coi thử có thằng nào đang chạy không
    exist_object=get_latest_today_process_log(job)
-   if exist_object and exist_object.get("status") == "PROCESSING":
+   if exist_object and (exist_object.get("status") == "PROCESSING" or exist_object.get("status") == "ERROR"):
        #1.4.6 gửi báo lỗi nếu không insert vô được database
-       send_email(f'Có một tiến trình khác đang chạy nên không chạy được {today}') 
+       send_email(f'Có một tiến trình khác đang chạy or đang bị lỗi nên không chạy được {today}') 
        return 
    else:
         try:
