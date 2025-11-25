@@ -33,42 +33,42 @@ public class NintendoGamesDataTransformer {
     public static void main(String[] args) {
         NintendoGamesDataTransformer process = new NintendoGamesDataTransformer();
 
-        // 3.1.0 Thực thi process để load config
+        // 4.1.0 Thực thi process để load config
         process.executeLoadConfig();
 
-        // 3.1.1 Parse JsonConfig để kết nối database control
+        // 4.1.1 Parse JsonConfig để kết nối database control
         process.parseJsonConfig();
 
-        // 3.1.2 Set config cho DbProcess
+        // 4.1.2 Set config cho DbProcess
         process.setupDbProcess();
 
-        // 3.1.3 Kiểm tra điều kiện cho phép thực hiện Transform
+        // 4.1.3 Kiểm tra điều kiện cho phép thực hiện Transform
         process.checkTransformCondition();
 
-        // 3.1.4 Đọc kết quả JSON trả về từ process LoadConfig
+        // 4.1.4 Đọc kết quả JSON trả về từ process LoadConfig
         process.readTaskFromProcess();
 
-        // 3.1.5 Insert log vào process_log với status PROCESSING
+        // 4.1.5 Insert log vào process_log với status PROCESSING
         process.startProcessLog();
 
-        // 3.1.6 Xác định thông tin và mở kết nối database staging
+        // 4.1.6 Xác định thông tin và mở kết nối database staging
         process.openConnection();
 
-        // 3.1.7 Gọi hàm createTargetTableIfNotExistsWrapper() để kiểm tra và tạo bảng nếu chưa tồn tại
+        // 4.1.7 Gọi hàm createTargetTableIfNotExistsWrapper() để kiểm tra và tạo bảng nếu chưa tồn tại
         process.createTargetTableIfNotExistsWrapper();
 
-        // 3.1.8 Gọi hàm truncateTargetTableWrapper() để làm sạch bảng trước khi load dữ liệu mới
+        // 4.1.8 Gọi hàm truncateTargetTableWrapper() để làm sạch bảng trước khi load dữ liệu mới
         process.truncateTargetTableWrapper();
 
-        // 3.1.9 Gọi hàm transformAndLoadWrapper() để thực hiện Transform & Load dữ liệu
+        // 4.1.9 Gọi hàm transformAndLoadWrapper() để thực hiện Transform & Load dữ liệu
         process.transformAndLoadWrapper();
 
 
-        // 3.1.10 Cập nhật process_log thành DONE và đóng kết nối
+        // 4.1.10 Cập nhật process_log thành DONE và đóng kết nối
         process.finish();
     }
 
-    // ======================== 3.1.0 Thực thi process để load config ==========================
+    // ======================== 4.1.0 Thực thi process để load config ==========================
     private void executeLoadConfig() {
         try {
             ProcessBuilder pb = new ProcessBuilder(
@@ -80,9 +80,9 @@ public class NintendoGamesDataTransformer {
             this.psLoad = pb.start();
 
         } catch (Exception e) {
-            // 3.2.1 In ra lỗi load config thất bại
+            // 4.2.1 In ra lỗi load config thất bại
             e.printStackTrace();
-            // 3.2.2 Gửi mail thông báo lỗi thực thi LoadConfig đến Admin
+            // 4.2.2 Gửi mail thông báo lỗi thực thi LoadConfig đến Admin
             EmailHelper.Send(
                     "Lỗi Job Nintendo Transform",
                     "Không thể chạy LoadConfig",
@@ -92,15 +92,15 @@ public class NintendoGamesDataTransformer {
         }
     }
 
-    // ======================== 3.1.1 Parse JsonConfig để kết nối database control ==========================
+    // ======================== 4.1.1 Parse JsonConfig để kết nối database control ==========================
     private void parseJsonConfig() {
         try {
             this.jsonConfig = DbProcess.getConfigJson("D:\\DW\\configs.json");
 
         } catch (Exception e) {
-            // 3.3.1 In ra lỗi khi Parse JsonConfig
+            // 4.3.1 In ra lỗi khi Parse JsonConfig
             e.printStackTrace();
-            // 3.3.2 Gửi mail thông báo lỗi Parse JsonConfig
+            // 4.3.2 Gửi mail thông báo lỗi Parse JsonConfig
             EmailHelper.Send(
                     "Lỗi Job Nintendo Transform",
                     "Lỗi khi Parse JsonConfig",
@@ -110,17 +110,17 @@ public class NintendoGamesDataTransformer {
         }
     }
 
-    // ======================== 3.1.2 Set config cho DbProcess ==========================
+    // ======================== 4.1.2 Set config cho DbProcess ==========================
     private void setupDbProcess() {
         DbProcess.setConfig(jsonConfig);
     }
 
-    // ======================== 3.1.3 Kiểm tra điều kiện cho phép thực hiện Transform ==========================
+    // ======================== 4.1.3 Kiểm tra điều kiện cho phép thực hiện Transform ==========================
     private void checkTransformCondition() {
         if (DbProcess.checkHasProcessAndNotError()) {
-            // 3.4.1 In ra thông báo không đủ điều kiện
+            // 4.4.1 In ra thông báo không đủ điều kiện
             System.out.println("Không thể thực hiện tiến trình do bị tiến trình khác block");
-            // 3.4.2 Gửi mail thông báo không đủ điều kiện
+            // 4.4.2 Gửi mail thông báo không đủ điều kiện
             EmailHelper.Send(
                     "Lỗi Job Nintendo Transform",
                     "Không thể thực hiện tiến trình do bị tiến trình khác block",
@@ -130,7 +130,7 @@ public class NintendoGamesDataTransformer {
         }
     }
 
-    // ======================== 3.1.4 Đọc kết quả JSON trả về từ process LoadConfig ==========================
+    // ======================== 4.1.4 Đọc kết quả JSON trả về từ process LoadConfig ==========================
     private void readTaskFromProcess() {
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(psLoad.getInputStream()))) {
@@ -149,9 +149,9 @@ public class NintendoGamesDataTransformer {
             this.jobName = "Transform Nintendo (Job " + task.getId() + ")";
 
         } catch (Exception e) {
-            // 3.5.1 In ra lỗi khi đọc/parse JSON
+            // 4.5.1 In ra lỗi khi đọc/parse JSON
             e.printStackTrace();
-            // 3.5.2 Gửi mail thông báo lỗi đọc/parse JSON
+            // 4.5.2 Gửi mail thông báo lỗi đọc/parse JSON
             EmailHelper.Send(
                     "Lỗi Job Nintendo Transform",
                     "Lỗi khi đọc output từ LoadConfig JAR",
@@ -161,7 +161,7 @@ public class NintendoGamesDataTransformer {
         }
     }
 
-    // ======================== 3.1.5 Insert log vào process_log với status PROCESSING ==========================
+    // ======================== 4.1.5 Insert log vào process_log với status PROCESSING ==========================
     private void startProcessLog() {
         try {
             this.processId = DbProcess.insertLog(
@@ -173,9 +173,9 @@ public class NintendoGamesDataTransformer {
             System.out.println("Bắt đầu log (ID: " + processId + ") cho Job " + task.getId());
 
         } catch (Exception e) {
-            // 3.6.1 In ra lỗi khi insert log
+            // 4.6.1 In ra lỗi khi insert log
             e.printStackTrace();
-            // 3.6.2 Gửi mail thông báo lỗi insert log
+            // 4.6.2 Gửi mail thông báo lỗi insert log
             EmailHelper.Send(
                     "Lỗi Job Nintendo Transform",
                     "Lỗi khi insert Process Log",
@@ -185,7 +185,7 @@ public class NintendoGamesDataTransformer {
         }
     }
 
-    // ======================== 3.1.6 Mở kết nối đến database staging ==========================
+    // ======================== 4.1.6 Mở kết nối đến database staging ==========================
     private void openConnection() {
         try {
             String serverIp = task.getDbConfig().getServerIp();
@@ -203,7 +203,7 @@ public class NintendoGamesDataTransformer {
         }
     }
 
-    // ======================== 3.1.7 Gọi hàm createTargetTableIfNotExistsWrapper() để kiểm tra và tạo bảng nếu chưa tồn tại ==========================
+    // ======================== 4.1.7 Gọi hàm createTargetTableIfNotExistsWrapper() để kiểm tra và tạo bảng nếu chưa tồn tại ==========================
     private void createTargetTableIfNotExistsWrapper() {
         try {
             createTargetTableIfNotExists(conn, "nintendo_games_temp");
@@ -212,7 +212,7 @@ public class NintendoGamesDataTransformer {
         }
     }
 
-    // ======================== 3.1.8 Gọi hàm truncateTargetTableWrapper() để làm sạch bảng trước khi load dữ liệu mới ==========================
+    // ======================== 4.1.8 Gọi hàm truncateTargetTableWrapper() để làm sạch bảng trước khi load dữ liệu mới ==========================
     private void truncateTargetTableWrapper() {
         try {
             truncateTargetTable(conn, "nintendo_games_temp");
@@ -221,7 +221,7 @@ public class NintendoGamesDataTransformer {
         }
     }
 
-    // ======================== 3.1.9 Gọi hàm transformAndLoadWrapper() để thực hiện Transform & Load dữ liệu  ==========================
+    // ======================== 4.1.9 Gọi hàm transformAndLoadWrapper() để thực hiện Transform & Load dữ liệu  ==========================
     private void transformAndLoadWrapper() {
         try {
             System.out.println("=".repeat(60));
@@ -231,11 +231,11 @@ public class NintendoGamesDataTransformer {
             transformAndLoad(conn, "nintendo_games_temp", processId);
 
         } catch (Exception e) {
-            // 3.7.1 In ra lỗi khi transform
+            // 4.7.1 In ra lỗi khi transform
             e.printStackTrace();
-            // 3.7.2 Cập nhật process_log thành ERROR
+            // 4.7.2 Cập nhật process_log thành ERROR
             DbProcess.updateLog(processId, "ERROR");
-            // 3.7.3 Gửi mail thông báo lỗi Transform
+            // 4.7.3 Gửi mail thông báo lỗi Transform
             EmailHelper.Send(
                     "Lỗi Job Nintendo Transform",
                     "Lỗi khi Transform dữ liệu",
@@ -245,7 +245,7 @@ public class NintendoGamesDataTransformer {
         }
     }
 
-    // ======================== 3.1.10 Cập nhật process_log thành DONE và đóng kết nối ==========================
+    // ======================== 4.1.10 Cập nhật process_log thành DONE và đóng kết nối ==========================
     private void finish() {
         try {
             if (conn != null) conn.close();
@@ -471,9 +471,9 @@ public class NintendoGamesDataTransformer {
                         games.add(game);
                     }
                 } catch (Exception e) {
-                    // 3.8.1 In ra lỗi khi transform row
+                    // 4.8.1 In ra lỗi khi transform row
                     System.err.println("Error transforming row id=" + rs.getLong("id") + ": " + e.getMessage());
-                    // 3.8.2 Gửi mail cảnh báo lỗi transform row (tiếp tục xử lý)
+                    // 4.8.2 Gửi mail cảnh báo lỗi transform row (tiếp tục xử lý)
                     EmailHelper.Send(
                             "Warning: Transform Row Error",
                             "Lỗi transform row id=" + rs.getLong("id"),
@@ -545,10 +545,10 @@ public class NintendoGamesDataTransformer {
                     }
 
                 } catch (SQLException e) {
-                    // 3.9.1 In ra lỗi khi insert game
+                    // 4.9.1 In ra lỗi khi insert game
                     errorCount++;
                     System.err.println("Error inserting game: " + game.getName() + " - " + e.getMessage());
-                    // 3.9.2 Gửi mail cảnh báo lỗi insert (tiếp tục xử lý)
+                    // 4.9.2 Gửi mail cảnh báo lỗi insert (tiếp tục xử lý)
                     if (errorCount <= 5) {
                         EmailHelper.Send(
                                 "Warning: Insert Game Error",
@@ -640,11 +640,11 @@ public class NintendoGamesDataTransformer {
             System.out.println("=".repeat(60));
 
         } catch (Exception e) {
-            // 3.10.1 Rollback transaction khi có lỗi
+            // 4.10.1 Rollback transaction khi có lỗi
             conn.rollback();
-            // 3.10.2 In ra lỗi nghiêm trọng
+            // 4.10.2 In ra lỗi nghiêm trọng
             e.printStackTrace();
-            // 3.10.3 Gửi mail thông báo lỗi nghiêm trọng
+            // 4.10.3 Gửi mail thông báo lỗi nghiêm trọng
             EmailHelper.Send(
                     "Lỗi Job Nintendo Transform",
                     "Lỗi nghiêm trọng trong quá trình Transform & Load",

@@ -31,44 +31,44 @@ public class NintendoGamesDataNormalizer {
     public static void main(String[] args) {
         NintendoGamesDataNormalizer process = new NintendoGamesDataNormalizer();
 
-        // 5.1.0 Thực thi process để load config
+        // 6.1.0 Thực thi process để load config
         process.executeLoadConfig();
 
-        // 5.1.1 Parse JsonConfig để kết nối database control
+        // 6.1.1 Parse JsonConfig để kết nối database control
         process.parseJsonConfig();
 
-        // 5.1.2 Set config cho DbProcess
+        // 6.1.2 Set config cho DbProcess
         process.setupDbProcess();
 
-        // 5.1.3 Kiểm tra điều kiện cho phép thực hiện Normalize
+        // 6.1.3 Kiểm tra điều kiện cho phép thực hiện Normalize
         process.checkNormalizeCondition();
 
-        // 5.1.4 Đọc kết quả JSON trả về từ process LoadConfig
+        // 6.1.4 Đọc kết quả JSON trả về từ process LoadConfig
         process.readTaskFromProcess();
 
-        // 5.1.5 Insert log vào process_log với status PROCESSING
+        // 6.1.5 Insert log vào process_log với status PROCESSING
         process.startProcessLog();
 
-        // 5.1.6 Xác định thông tin và mở kết nối database warehouse
+        // 6.1.6 Xác định thông tin và mở kết nối database warehouse
         process.openConnection();
 
-        // 5.1.7 Gọi hàm createNormalizedTablesWrapper() để tạo các bảng chuẩn hóa
+        // 6.1.7 Gọi hàm createNormalizedTablesWrapper() để tạo các bảng chuẩn hóa
         process.createNormalizedTablesWrapper();
 
-        // 5.1.8 Load file CSV vào bảng nintendo_games
+        // 6.1.8 Load file CSV vào bảng nintendo_games
         process.loadCsvFileWrapper();
 
-        // 5.1.9 Gọi hàm normalizeAndLoadWrapper() để chuẩn hóa và load dữ liệu vào các bảng normalized
+        // 6.1.9 Gọi hàm normalizeAndLoadWrapper() để chuẩn hóa và load dữ liệu vào các bảng normalized
         process.normalizeAndLoadWrapper();
 
-        // 5.1.10 In thống kê dữ liệu của data warehouse sau khi normalize
+        // 6.1.10 In thống kê dữ liệu của data warehouse sau khi normalize
         process.printStatisticsWrapper();
 
-        // 5.1.11 Cập nhật process_log thành DONE và đóng kết nối
+        // 6.1.11 Cập nhật process_log thành DONE và đóng kết nối
         process.finish();
     }
 
-    // ======================== 5.1.0 Thực thi process để load config ==========================
+    // ======================== 6.1.0 Thực thi process để load config ==========================
     private void executeLoadConfig() {
         try {
             ProcessBuilder pb = new ProcessBuilder(
@@ -80,9 +80,9 @@ public class NintendoGamesDataNormalizer {
             this.psLoad = pb.start();
 
         } catch (Exception e) {
-            // 5.2.1 In ra lỗi khi thực thi LoadConfig
+            // 6.2.1 In ra lỗi khi thực thi LoadConfig
             e.printStackTrace();
-            // 5.2.2 Gửi mail thông báo lỗi thực thi LoadConfig
+            // 6.2.2 Gửi mail thông báo lỗi thực thi LoadConfig
             EmailHelper.Send(
                     "Lỗi Job Nintendo Normalize",
                     "Không thể chạy LoadConfig",
@@ -92,15 +92,15 @@ public class NintendoGamesDataNormalizer {
         }
     }
 
-    // ======================== 5.1.1 Parse JsonConfig để kết nối database control ==========================
+    // ======================== 6.1.1 Parse JsonConfig để kết nối database control ==========================
     private void parseJsonConfig() {
         try {
             this.jsonConfig = DbProcess.getConfigJson("D:\\DW\\configs.json");
 
         } catch (Exception e) {
-            // 5.3.1 In ra lỗi khi Parse JsonConfig
+            // 6.3.1 In ra lỗi khi Parse JsonConfig
             e.printStackTrace();
-            // 5.3.2 Gửi mail thông báo lỗi Parse JsonConfig
+            // 6.3.2 Gửi mail thông báo lỗi Parse JsonConfig
             EmailHelper.Send(
                     "Lỗi Job Nintendo Normalize",
                     "Lỗi khi Parse JsonConfig",
@@ -110,17 +110,17 @@ public class NintendoGamesDataNormalizer {
         }
     }
 
-    // ======================== 5.1.2 Set config cho DbProcess ==========================
+    // ======================== 6.1.2 Set config cho DbProcess ==========================
     private void setupDbProcess() {
         DbProcess.setConfig(jsonConfig);
     }
 
-    // ======================== 5.1.3 Kiểm tra điều kiện cho phép thực hiện Normalize ==========================
+    // ======================== 6.1.3 Kiểm tra điều kiện cho phép thực hiện Normalize ==========================
     private void checkNormalizeCondition() {
         if (DbProcess.checkHasProcessAndNotError()) {
-            // 5.4.1 In ra thông báo không đủ điều kiện
+            // 6.4.1 In ra thông báo không đủ điều kiện
             System.out.println("Không thể thực hiện tiến trình do bị tiến trình khác block");
-            // 5.4.2 Gửi mail thông báo không đủ điều kiện
+            // 6.4.2 Gửi mail thông báo không đủ điều kiện
             EmailHelper.Send(
                     "Lỗi Job Nintendo Normalize",
                     "Không thể thực hiện tiến trình do bị tiến trình khác block",
@@ -130,7 +130,7 @@ public class NintendoGamesDataNormalizer {
         }
     }
 
-    // ======================== 5.1.4 Đọc kết quả JSON trả về từ process LoadConfig ==========================
+    // ======================== 6.1.4 Đọc kết quả JSON trả về từ process LoadConfig ==========================
     private void readTaskFromProcess() {
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(psLoad.getInputStream()))) {
@@ -149,9 +149,9 @@ public class NintendoGamesDataNormalizer {
             this.jobName = "Normalize Nintendo (Job " + task.getId() + ")";
 
         } catch (Exception e) {
-            // 5.5.1 In ra lỗi khi đọc/parse JSON
+            // 6.5.1 In ra lỗi khi đọc/parse JSON
             e.printStackTrace();
-            // 5.5.2 Gửi mail thông báo lỗi đọc/parse JSON
+            // 6.5.2 Gửi mail thông báo lỗi đọc/parse JSON
             EmailHelper.Send(
                     "Lỗi Job Nintendo Normalize",
                     "Lỗi khi đọc output từ LoadConfig JAR",
@@ -161,7 +161,7 @@ public class NintendoGamesDataNormalizer {
         }
     }
 
-    // ======================== 5.1.5 Insert log vào process_log với status PROCESSING ==========================
+    // ======================== 6.1.5 Insert log vào process_log với status PROCESSING ==========================
     private void startProcessLog() {
         try {
             this.processId = DbProcess.insertLog(
@@ -173,9 +173,9 @@ public class NintendoGamesDataNormalizer {
             System.out.println("Bắt đầu log (ID: " + processId + ") cho Job " + task.getId());
 
         } catch (Exception e) {
-            // 5.6.1 In ra lỗi khi insert log
+            // 6.6.1 In ra lỗi khi insert log
             e.printStackTrace();
-            // 5.6.2 Gửi mail thông báo lỗi insert log
+            // 6.6.2 Gửi mail thông báo lỗi insert log
             EmailHelper.Send(
                     "Lỗi Job Nintendo Normalize",
                     "Lỗi khi insert Process Log",
@@ -185,7 +185,7 @@ public class NintendoGamesDataNormalizer {
         }
     }
 
-    // ======================== 5.1.6 Mở kết nối đến database warehouse ==========================
+    // ======================== 6.1.6 Mở kết nối đến database warehouse ==========================
     private void openConnection() {
         try {
             String serverIp = task.getDbConfig().getServerIp();
@@ -203,7 +203,7 @@ public class NintendoGamesDataNormalizer {
         }
     }
 
-    // ======================== 5.1.7 Gọi hàm createNormalizedTablesWrapper() để tạo các bảng chuẩn hóa ==========================
+    // ======================== 6.1.7 Gọi hàm createNormalizedTablesWrapper() để tạo các bảng chuẩn hóa ==========================
     private void createNormalizedTablesWrapper() {
         try {
             System.out.println("=".repeat(60));
@@ -217,7 +217,7 @@ public class NintendoGamesDataNormalizer {
         }
     }
 
-    // ======================== 5.1.8 Load file CSV vào bảng nintendo_games ==========================
+    // ======================== 6.1.8 Load file CSV vào bảng nintendo_games ==========================
     private void loadCsvFileWrapper() {
         try {
             loadCsvFile(conn, task.getSourcePath());
@@ -227,17 +227,17 @@ public class NintendoGamesDataNormalizer {
         }
     }
 
-    // ======================== 5.1.9 Gọi hàm normalizeAndLoadWrapper() để chuẩn hóa và load dữ liệu vào các bảng normalized ==========================
+    // ======================== 6.1.9 Gọi hàm normalizeAndLoadWrapper() để chuẩn hóa và load dữ liệu vào các bảng normalized ==========================
     private void normalizeAndLoadWrapper() {
         try {
             normalizeAndLoad(conn, processId);
 
         } catch (Exception e) {
-            // 5.7.1 In ra lỗi khi normalize
+            // 6.7.1 In ra lỗi khi normalize
             e.printStackTrace();
-            // 5.7.2 Cập nhật process_log thành ERROR
+            // 6.7.2 Cập nhật process_log thành ERROR
             DbProcess.updateLog(processId, "ERROR");
-            // 5.7.3 Gửi mail thông báo lỗi Normalize
+            // 6.7.3 Gửi mail thông báo lỗi Normalize
             EmailHelper.Send(
                     "Lỗi Job Nintendo Normalize",
                     "Lỗi khi Normalize dữ liệu",
@@ -247,7 +247,7 @@ public class NintendoGamesDataNormalizer {
         }
     }
 
-    // ======================== 5.1.10 In thống kê dữ liệu của data warehouse sau khi normalize ==========================
+    // ======================== 6.1.10 In thống kê dữ liệu của data warehouse sau khi normalize ==========================
     private void printStatisticsWrapper() {
         try {
             printStatistics(conn);
@@ -257,7 +257,7 @@ public class NintendoGamesDataNormalizer {
         }
     }
 
-    // ======================== 5.1.11 Cập nhật process_log thành DONE và đóng kết nối ==========================
+    // ======================== 6.1.11 Cập nhật process_log thành DONE và đóng kết nối ==========================
     private void finish() {
         try {
             if (conn != null) conn.close();
@@ -487,7 +487,7 @@ public class NintendoGamesDataNormalizer {
     }
 
     /**
-     * 5.1.10 Normalize và load data từ nintendo_games table
+     * 6.1.10 Normalize và load data từ nintendo_games table
      */
     private static void normalizeAndLoad(Connection conn, long processId) throws SQLException {
         try {
@@ -549,7 +549,7 @@ public class NintendoGamesDataNormalizer {
                         }
 
                     } catch (Exception e) {
-                        // 5.8.1 In ra lỗi khi xử lý game (tiếp tục xử lý)
+                        // 6.9.1 In ra lỗi khi xử lý game (tiếp tục xử lý)
                         System.err.println("Error processing game: " + rs.getString("name"));
                         e.printStackTrace();
                     }
@@ -567,7 +567,7 @@ public class NintendoGamesDataNormalizer {
             System.out.println("=".repeat(60));
 
         } catch (Exception e) {
-            // 5.9.1 Rollback transaction khi có lỗi
+            // 6.9.1 Rollback transaction khi có lỗi
             conn.rollback();
             throw e;
         } finally {
@@ -576,7 +576,7 @@ public class NintendoGamesDataNormalizer {
     }
 
     /**
-     * 5.1.9 Load file CSV vào bảng nintendo_games
+     * 6.1.9 Load file CSV vào bảng nintendo_games
      */
     private static void loadCsvFile(Connection conn, String csvPath) throws SQLException {
         String tableName = "nintendo_games";
@@ -679,7 +679,7 @@ public class NintendoGamesDataNormalizer {
     }
 
     /**
-     * 5.1.11 In thống kê dữ liệu đã normalize bằng stored procedure
+     * 6.1.11 In thống kê dữ liệu đã normalize bằng stored procedure
      */
     private static void printStatistics(Connection conn) throws SQLException {
         System.out.println("\n" + "=".repeat(60));
